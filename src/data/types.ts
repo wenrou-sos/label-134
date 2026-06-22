@@ -46,6 +46,18 @@ export interface FollowupStat {
   percentage: number
 }
 
+export interface DeptReasonMatrixItem {
+  department: string
+  reason: ReasonTag
+  count: number
+}
+
+export interface DeptReasonPeak {
+  department: string
+  topReason: ReasonTag
+  topCount: number
+}
+
 export const REASON_TAGS: ReasonTag[] = ['薪资', '管理', '发展', '加班', '通勤', '家庭', '健康']
 
 export const REASON_COLORS: Record<ReasonTag, string> = {

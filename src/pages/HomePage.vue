@@ -5,6 +5,7 @@ import ReasonAnalysis from '@/components/ReasonAnalysis.vue'
 import DeptTurnoverChart from '@/components/DeptTurnoverChart.vue'
 import TenureDistribution from '@/components/TenureDistribution.vue'
 import FollowupPie from '@/components/FollowupPie.vue'
+import DeptReasonHeatmap from '@/components/DeptReasonHeatmap.vue'
 import InterviewTable from '@/components/InterviewTable.vue'
 import { getOverviewStats } from '@/data/mockData'
 
@@ -106,6 +107,11 @@ const dataDate = computed(() => {
     <section class="mb-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
       <TenureDistribution />
       <FollowupPie />
+    </section>
+
+    <!-- Heatmap Cross Analysis -->
+    <section class="mb-6">
+      <DeptReasonHeatmap />
     </section>
 
     <!-- Table -->

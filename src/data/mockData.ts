@@ -6,6 +6,8 @@ import type {
   TenureStat,
   FollowupStat,
   TimeRange,
+  DeptReasonMatrixItem,
+  DeptReasonPeak,
 } from './types'
 import { REASON_TAGS, TENURE_RANGES, FOLLOWUP_STATUSES } from './types'
 
@@ -156,6 +158,59 @@ export function getFollowupStats(): FollowupStat[] {
     count: counts[status],
     percentage: Math.round((counts[status] / total) * 1000) / 10,
   }))
+}
+
+const DEPARTMENTS = [
+  '研发部',
+  '产品部',
+  '销售部',
+  '市场部',
+  '运营部',
+  '人力资源部',
+  '财务部',
+  '客户服务部',
+]
+
+export function getDeptReasonMatrix(timeRange: TimeRange = 'quarter'): DeptReasonMatrixItem[] {
+  const cutoff = daysInRange(timeRange)
+  const matrix: DeptReasonMatrixItem[] = []
+
+  DEPARTMENTS.forEach((dept) => {
+    REASON_TAGS.forEach((reason) => {
+      let count = 0
+      interviews.forEach((record) => {
+        if (record.department !== dept) return
+        const days = Math.floor(
+          (today.getTime() - new Date(record.interviewDate).getTime()) / (1000 * 60 * 60 * 24),
+        )
+        if (days <= cutoff && record.reasonTags.includes(reason)) {
+          count++
+        }
+      })
+      matrix.push({ department: dept, reason, count })
+    })
+  })
+
+  return matrix
+}
+
+export function getDeptReasonPeaks(timeRange: TimeRange = 'quarter'): DeptReasonPeak[] {
+  const matrix = getDeptReasonMatrix(timeRange)
+  const peaks: DeptReasonPeak[] = []
+
+  DEPARTMENTS.forEach((dept) => {
+    const deptItems = matrix.filter((m) => m.department === dept)
+    const maxItem = deptItems.reduce((max, item) => (item.count > max.count ? item : max), deptItems[0])
+    if (maxItem && maxItem.count > 0) {
+      peaks.push({
+        department: dept,
+        topReason: maxItem.reason,
+        topCount: maxItem.count,
+      })
+    }
+  })
+
+  return peaks.sort((a, b) => b.topCount - a.topCount)
 }
 
 export function getOverviewStats() {
