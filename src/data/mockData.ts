@@ -9,7 +9,7 @@ import type {
 } from './types'
 import { REASON_TAGS, TENURE_RANGES, FOLLOWUP_STATUSES } from './types'
 
-const today = new Date('2026-06-22')
+const today = new Date()
 
 function dateStr(daysAgo: number): string {
   const d = new Date(today)
@@ -110,7 +110,12 @@ export function getReasonStats(timeRange: TimeRange): ReasonStat[] {
 export function getDeptTurnover(): DeptTurnover[] {
   const resignedByDept: Record<string, number> = {}
   interviews.forEach((record) => {
-    resignedByDept[record.department] = (resignedByDept[record.department] || 0) + 1
+    const days = Math.floor(
+      (today.getTime() - new Date(record.interviewDate).getTime()) / (1000 * 60 * 60 * 24),
+    )
+    if (days <= 30) {
+      resignedByDept[record.department] = (resignedByDept[record.department] || 0) + 1
+    }
   })
 
   return Object.keys(DEPT_HEADCOUNT).map((dept) => {

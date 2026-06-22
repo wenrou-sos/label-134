@@ -11,9 +11,14 @@ import { getOverviewStats } from '@/data/mockData'
 const overview = computed(() => getOverviewStats())
 
 const currentDate = computed(() => {
-  const d = new Date('2026-06-22')
+  const d = new Date()
   const weekdays = ['日', '一', '二', '三', '四', '五', '六']
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 · 星期${weekdays[d.getDay()]}`
+})
+
+const dataDate = computed(() => {
+  const d = new Date()
+  return d.toISOString().slice(0, 10)
 })
 </script>
 
@@ -114,7 +119,7 @@ const currentDate = computed(() => {
       <span>·</span>
       <span>Vue 3 + ECharts</span>
       <span>·</span>
-      <span>数据截至 2026-06-22</span>
+      <span>数据截至 {{ dataDate }}</span>
     </footer>
   </div>
 </template>
